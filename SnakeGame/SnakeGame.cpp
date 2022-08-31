@@ -19,6 +19,7 @@ private:
         headX = WEIGHT / 2,
         headY = HEIGHT / 2,
         randomValue = getRandomValue();
+
     void setDifficulty() {
         cout << "Выберите уровень сложности!\n"s
             << "1 - Легкий\n2 - Средний\n3 - Тяжёлый\n"s;
