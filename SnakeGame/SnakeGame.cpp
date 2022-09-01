@@ -8,18 +8,23 @@ using namespace std;
 const short WEIGHT = 11;
 const short HEIGHT = 13;
 
+void Greetings() {
+    cout << "Игра 'Змейка' - поглощайте сердца, чтобы расти.\n"s
+        << "Управление производится клавишами W,A,S,D.\n\n"s;
+}
+
 class SnakeGame {
 private:
     string board[WEIGHT][HEIGHT];
-    vector <short> snakeTors;
+    vector <short> snake_tors;
     char difficulty = {},
         direction = '0';
-    short vinLenght = 0,
-        snakeLenght = 0,
+    short vin_lenght = 0,
+        snake_lenght = 0,
         headX = WEIGHT / 2,
         headY = HEIGHT / 2,
-        randomValue = getRandomValue();
-    void setDifficulty() {
+        random_value = GetRandomValue();
+    void SetDifficulty() {
         cout << "Выберите уровень сложности!\n"s
             << "1 - Легкий\n2 - Средний\n3 - Тяжёлый\n"s;
         string temp;
@@ -27,17 +32,17 @@ private:
             cin >> temp;
             if (temp.size() == 1 && temp[0] == '1') {
                 difficulty = temp[0];
-                vinLenght = 24;
+                vin_lenght = 24;
                 break;
             }
             else if (temp.size() == 1 && temp[0] == '2') {
                 difficulty = temp[0];
-                vinLenght = 29;
+                vin_lenght = 29;
                 break;
             }
             else if (temp.size() == 1 && temp[0] == '3') {
                 difficulty = temp[0];
-                vinLenght = 34;
+                vin_lenght = 34;
                 break;
             }
             else {
@@ -45,19 +50,19 @@ private:
             }
         }
     }
-    bool createGame() {
+    bool CreateGame() {
         short count = 1;
-        bool theEnd = 0;
-        moveSnake(headX, headY);    //направления змейки
-        createEdges(count);         //создание краёв поля
-        createTors(count);          //создание тела
-        createHead(count, theEnd);  //создание головы
-        createHearts(count);        //создание сердец на поле
-        drawBoard();                //визуальное отображение
-        drawStatus();               //вывод игровой статистики
-        return theEnd;
+        bool the_end = 0;
+        MoveSnake(headX, headY);    //направления змейки
+        CreateEdges(count);         //создание краёв поля
+        CreateTors(count);          //создание тела
+        CreateHead(count, the_end);  //создание головы
+        CreateHearts(count);        //создание сердец на поле
+        DrawBoard();                //визуальное отображение
+        DrawStatus();               //вывод игровой статистики
+        return the_end;
     }
-    void moveSnake(short& headX, short& headY) {
+    void MoveSnake(short& headX, short& headY) {
         if (direction == '1') {
             --headX;
         }
@@ -71,7 +76,7 @@ private:
             ++headY;
         }
     }
-    void createEdges(short& count) {
+    void CreateEdges(short& count) {
         for (int i = 0, count = 1; i < WEIGHT; ++i) {
             for (int j = 0; j < HEIGHT; ++j, ++count) {
                 if (i == 0 || i == WEIGHT - 1 || j == 0 || j == HEIGHT - 1) {
@@ -84,11 +89,11 @@ private:
             }
         }
     }
-    void createTors(short& count) {
+    void CreateTors(short& count) {
         for (int i = 1, count = 1; i < WEIGHT - 1; ++i) {
             for (int j = 1; j < HEIGHT - 1; ++j, ++count) {
-                if (snakeLenght > 0) {
-                    for (const auto& x : snakeTors) {
+                if (snake_lenght > 0) {
+                    for (const auto& x : snake_tors) {
                         if (count == x) {
                             board[i][j] = 'o';
                         }
@@ -97,28 +102,28 @@ private:
             }
         }
     }
-    void createHead(short& count, bool& theEnd) {
+    void CreateHead(short& count, bool& the_end) {
         for (int i = 0, count = 1; i < WEIGHT; ++i) {
             for (int j = 0; j < HEIGHT; ++j) {
                 if (i == headX && j == headY) {                             //голова
                     if (board[i][j][0] == '*' || board[i][j][0] == 'o') {   //поражение-победа
-                        theEnd = 1;
+                        the_end = 1;
                         board[i][j] = 'X';
                         break;
                     }
-                    else if (snakeLenght == vinLenght) {
-                        theEnd = 1;
+                    else if (snake_lenght == vin_lenght) {
+                        the_end = 1;
                     }
-                    if (snakeLenght > 0) {                                  //обработка тела
-                        reverse(snakeTors.begin(), snakeTors.end());
-                        snakeTors.pop_back();
-                        reverse(snakeTors.begin(), snakeTors.end());
-                        snakeTors.push_back(count);
+                    if (snake_lenght > 0) {                                  //обработка тела
+                        reverse(snake_tors.begin(), snake_tors.end());
+                        snake_tors.pop_back();
+                        reverse(snake_tors.begin(), snake_tors.end());
+                        snake_tors.push_back(count);
                     }
                     if (board[i][j][0] == char(3)) {                        //сердца-генерация после поглощения
-                        ++snakeLenght;
-                        snakeTors.push_back(randomValue);
-                        getRandomValue();
+                        ++snake_lenght;
+                        snake_tors.push_back(random_value);
+                        GetRandomValue();
                     }
                     board[i][j] = 'O';
                 }
@@ -128,28 +133,28 @@ private:
             }
         }
     }
-    void createHearts(short& count) {
-        if (snakeLenght != vinLenght) {
+    void CreateHearts(short& count) {
+        if (snake_lenght != vin_lenght) {
             for (int i = 1, count = 1; i < WEIGHT - 1; ++i) {
                 for (int j = 1; j < HEIGHT - 1; ++j, ++count) {
-                    if (count == randomValue && board[i][j][0] != 'o' && board[i][j][0] != 'O') {
+                    if (count == random_value && board[i][j][0] != 'o' && board[i][j][0] != 'O') {
                         board[i][j] = char(3);
                     }
-                    else if (count == randomValue && (board[i][j][0] == 'o' || board[i][j][0] == 'O')) {
+                    else if (count == random_value && (board[i][j][0] == 'o' || board[i][j][0] == 'O')) {
                         i = 0;
                         j = 1;
                         count = 1;
-                        getRandomValue();
+                        GetRandomValue();
                         break;
                     }
                 }
             }
         }
     }
-    short getRandomValue() {
-        return randomValue = rand() % ((WEIGHT - 2) * (HEIGHT - 2)) + 1;
+    short GetRandomValue() {
+        return random_value = rand() % ((WEIGHT - 2) * (HEIGHT - 2)) + 1;
     }
-    void drawBoard() {
+    void DrawBoard() {
         for (int i = 0; i < WEIGHT; ++i) {
             for (int j = 0; j < HEIGHT; ++j) {
                 if (board[i][j][0] >= '1' && board[i][j][0] <= '9') {
@@ -162,33 +167,29 @@ private:
             cout << "\n"s;
         }
     }
-    void drawStatus() {
-        cout << "Длина змейкм - "s << snakeLenght + 1
-            << "\nОсталось поглотить - "s << vinLenght - snakeLenght << " сердец.\n"s;
-        if (snakeLenght <= 2) {
+    void DrawStatus() {
+        cout << "Длина змейкм - "s << snake_lenght + 1
+            << "\nОсталось поглотить - "s << vin_lenght - snake_lenght << " сердец.\n"s;
+        if (snake_lenght <= 2) {
             cout << "Ты - Головастик. Покушай малыш!\n\n"s;
         }
-        else if (snakeLenght > 2 && snakeLenght <= 8) {
+        else if (snake_lenght > 2 && snake_lenght <= 8) {
             cout << "Ты - Маленькая змейка. Ещё чуть-чуть пупсик!\n\n"s;
         }
-        else if (snakeLenght > 8 && snakeLenght <= 15) {
+        else if (snake_lenght > 8 && snake_lenght <= 15) {
             cout << "Ты - Обычная змейка. Обыкновенность на кончиках пальцев!\n\n"s;
         }
-        else if (snakeLenght > 15 && snakeLenght <= 21) {
+        else if (snake_lenght > 15 && snake_lenght <= 21) {
             cout << "Ты - Жирная змейка. Кто то в последнее время навернул немало фастфуда!\n\n"s;
         }
-        else if (snakeLenght > 21) {
+        else if (snake_lenght > 21) {
             cout << "Ты - Отожраный червос. Смотри не лопни!\n\n"s;
         }
     }
 public:
     char restart = {};
-    void greetings() {
-        cout << "Игра 'Змейка' - поглощайте сердца, чтобы расти.\n"s
-            << "Управление производится клавишами W,A,S,D.\n\n"s;
-    }
-    void startGame() {
-        setDifficulty();
+    void StartGame() {
+        SetDifficulty();
         for (;;) {
             if (_kbhit()) {
                 char key = _getch();
@@ -209,7 +210,7 @@ public:
                 }
             }
             system("cls");                  //Очистка экрана
-            if (createGame()) {
+            if (CreateGame()) {
                 break;
             }
             if (difficulty == '1') {
@@ -222,7 +223,7 @@ public:
                 Sleep(200);
             }
         }
-        if (snakeLenght < vinLenght) {
+        if (snake_lenght < vin_lenght) {
             cout << "Игра окончена - Поражение!\nЖелаете начать заново? Y/N - "s;
         }
         else {
@@ -236,10 +237,10 @@ public:
 int main() {
     setlocale(LC_ALL, "ru");
     srand(time(NULL));
-    SnakeGame game;
-    game.greetings();
+    Greetings();
 RESTART:
-    game.startGame();
+    SnakeGame game;
+    game.StartGame();
     if (game.restart == 'Y' || game.restart == 'y') {
         goto RESTART;
     }
