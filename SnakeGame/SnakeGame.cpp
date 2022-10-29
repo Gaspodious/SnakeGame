@@ -17,13 +17,13 @@ class SnakeGame {
 private:
     string board[WEIGHT][HEIGHT];
     vector <short> snake_tors;
-    char difficulty = {},
-        direction = '0';
-    short vin_lenght = 0,
-        snake_lenght = 0,
-        headX = WEIGHT / 2,
-        headY = HEIGHT / 2,
-        random_value = GetRandomValue();
+    char difficulty,
+        direction;
+    short vin_lenght,
+        snake_lenght,
+        head_X,
+        head_Y,
+        random_value;
     void SetDifficulty() {
         cout << "Выберите уровень сложности!\n"s
             << "1 - Легкий\n2 - Средний\n3 - Тяжёлый\n"s;
@@ -51,33 +51,33 @@ private:
         }
     }
     bool CreateGame() {
-        short count = 1;
         bool the_end = 0;
-        MoveSnake(headX, headY);    //направления змейки
+        short count = 1;
+        MoveSnake();                //направления змейки
         CreateEdges(count);         //создание краёв поля
         CreateTors(count);          //создание тела
-        CreateHead(count, the_end);  //создание головы
+        CreateHead(count, the_end); //создание головы
         CreateHearts(count);        //создание сердец на поле
         DrawBoard();                //визуальное отображение
         DrawStatus();               //вывод игровой статистики
         return the_end;
     }
-    void MoveSnake(short& headX, short& headY) {
+    void MoveSnake() {
         if (direction == '1') {
-            --headX;
+            --head_X;
         }
         else if (direction == '2') {
-            --headY;
+            --head_Y;
         }
         else if (direction == '3') {
-            ++headX;
+            ++head_X;
         }
         else if (direction == '4') {
-            ++headY;
+            ++head_Y;
         }
     }
-    void CreateEdges(short& count) {
-        for (int i = 0, count = 1; i < WEIGHT; ++i) {
+    void CreateEdges(short count) {
+        for (int i = 0; i < WEIGHT; ++i) {
             for (int j = 0; j < HEIGHT; ++j, ++count) {
                 if (i == 0 || i == WEIGHT - 1 || j == 0 || j == HEIGHT - 1) {
                     board[i][j] = '*';
@@ -89,8 +89,8 @@ private:
             }
         }
     }
-    void CreateTors(short& count) {
-        for (int i = 1, count = 1; i < WEIGHT - 1; ++i) {
+    void CreateTors(short count) {
+        for (int i = 1; i < WEIGHT - 1; ++i) {
             for (int j = 1; j < HEIGHT - 1; ++j, ++count) {
                 if (snake_lenght > 0) {
                     for (const auto& x : snake_tors) {
@@ -102,10 +102,10 @@ private:
             }
         }
     }
-    void CreateHead(short& count, bool& the_end) {
-        for (int i = 0, count = 1; i < WEIGHT; ++i) {
+    void CreateHead(short count, bool& the_end) {
+        for (int i = 0; i < WEIGHT; ++i) {
             for (int j = 0; j < HEIGHT; ++j) {
-                if (i == headX && j == headY) {                             //голова
+                if (i == head_X && j == head_Y) {                           //голова
                     if (board[i][j][0] == '*' || board[i][j][0] == 'o') {   //поражение-победа
                         the_end = 1;
                         board[i][j] = 'X';
@@ -123,7 +123,7 @@ private:
                     if (board[i][j][0] == char(3)) {                        //сердца-генерация после поглощения
                         ++snake_lenght;
                         snake_tors.push_back(random_value);
-                        GetRandomValue();
+                        SetRandomValue();
                     }
                     board[i][j] = 'O';
                 }
@@ -133,9 +133,9 @@ private:
             }
         }
     }
-    void CreateHearts(short& count) {
+    void CreateHearts(short count) {
         if (snake_lenght != vin_lenght) {
-            for (int i = 1, count = 1; i < WEIGHT - 1; ++i) {
+            for (int i = 1; i < WEIGHT - 1; ++i) {
                 for (int j = 1; j < HEIGHT - 1; ++j, ++count) {
                     if (count == random_value && board[i][j][0] != 'o' && board[i][j][0] != 'O') {
                         board[i][j] = char(3);
@@ -144,14 +144,14 @@ private:
                         i = 0;
                         j = 1;
                         count = 1;
-                        GetRandomValue();
+                        SetRandomValue();
                         break;
                     }
                 }
             }
         }
     }
-    short GetRandomValue() {
+    short SetRandomValue() {
         return random_value = rand() % ((WEIGHT - 2) * (HEIGHT - 2)) + 1;
     }
     void DrawBoard() {
@@ -187,7 +187,17 @@ private:
         }
     }
 public:
-    char restart = {};
+    SnakeGame() {
+        difficulty = {};
+        direction = '0';
+        vin_lenght = 0;
+        snake_lenght = 0;
+        head_X = WEIGHT / 2;
+        head_Y = HEIGHT / 2;
+        random_value = SetRandomValue();
+        restart = {};
+    }
+    char restart;
     void StartGame() {
         SetDifficulty();
         for (;;) {
@@ -209,8 +219,8 @@ public:
                     cin >> direction;
                 }
             }
-            system("cls");                  //Очистка экрана
-            if (CreateGame()) {
+            system("cls");      //Очистка экрана
+            if (CreateGame() || snake_lenght == vin_lenght) {
                 break;
             }
             if (difficulty == '1') {
@@ -224,13 +234,12 @@ public:
             }
         }
         if (snake_lenght < vin_lenght) {
-            cout << "Игра окончена - Поражение!\nЖелаете начать заново? Y/N - "s;
+            cout << "Игра окончена - Поражение!\nЖелаете начать заново?\nНажмите 'Y/y' - если хотите или любую другую, чтобы закончить - "s;
         }
         else {
-            cout << "Игра окончена - Победа!\nЖелаете начать заново? Y/N - "s;
+            cout << "Игра окончена - Победа!\nЖелаете начать заново?\nНажмите 'Y/y' - если хотите или любую другую, чтобы закончить - "s;
         }
         cin >> restart;
-        system("cls");
     }
 };
 
@@ -242,6 +251,7 @@ RESTART:
     SnakeGame game;
     game.StartGame();
     if (game.restart == 'Y' || game.restart == 'y') {
+        system("cls");
         goto RESTART;
     }
     return 0;
