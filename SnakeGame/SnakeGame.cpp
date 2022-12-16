@@ -3,20 +3,19 @@
 #include <vector>
 #include <conio.h>
 #include <windows.h>
-using namespace std;
 
 const short WEIGHT = 11;
 const short HEIGHT = 13;
 
 void Greetings() {
-    cout << "Игра 'Змейка' - поглощайте сердца, чтобы расти.\n"s
-        << "Управление производится клавишами W,A,S,D.\n\n"s;
+    std::cout << "Игра 'Змейка' - поглощайте сердца, чтобы расти.\n"
+        << "Управление производится клавишами W,A,S,D.\n\n";
 }
 
 class SnakeGame {
 private:
-    string board[WEIGHT][HEIGHT];
-    vector <short> snake_tors;
+    std::string board[WEIGHT][HEIGHT];
+    std::vector <short> snake_tors;
     char difficulty,
         direction;
     short vin_lenght,
@@ -25,11 +24,11 @@ private:
         head_Y,
         random_value;
     void SetDifficulty() {
-        cout << "Выберите уровень сложности!\n"s
-            << "1 - Легкий\n2 - Средний\n3 - Тяжёлый\n"s;
-        string temp;
+        std::cout << "Выберите уровень сложности!\n"
+            << "1 - Легкий\n2 - Средний\n3 - Тяжёлый\n";
+        std::string temp;
         for (;;) {
-            cin >> temp;
+            std::cin >> temp;
             if (temp.size() == 1 && temp[0] == '1') {
                 difficulty = temp[0];
                 vin_lenght = 24;
@@ -46,7 +45,7 @@ private:
                 break;
             }
             else {
-                cout << "Ошибка! Повторите ввод!\n"s;
+                std::cout << "Ошибка! Повторите ввод!\n";
             }
         }
     }
@@ -63,18 +62,10 @@ private:
         return the_end;
     }
     void MoveSnake() {
-        if (direction == '1') {
-            --head_X;
-        }
-        else if (direction == '2') {
-            --head_Y;
-        }
-        else if (direction == '3') {
-            ++head_X;
-        }
-        else if (direction == '4') {
-            ++head_Y;
-        }
+        if (direction == '1') { --head_X; }
+        else if (direction == '2') { --head_Y; }
+        else if (direction == '3') { ++head_X; }
+        else if (direction == '4') { ++head_Y; }
     }
     void CreateEdges(short count) {
         for (int i = 0; i < WEIGHT; ++i) {
@@ -84,7 +75,7 @@ private:
                     --count;
                 }
                 else if (board[i][j][0] != char(3)) {
-                    board[i][j] = to_string(count);
+                    board[i][j] = std::to_string(count);
                 }
             }
         }
@@ -158,32 +149,32 @@ private:
         for (int i = 0; i < WEIGHT; ++i) {
             for (int j = 0; j < HEIGHT; ++j) {
                 if (board[i][j][0] >= '1' && board[i][j][0] <= '9') {
-                    cout << "  ";
+                    std::cout << "  ";
                 }
                 else {
-                    cout << board[i][j] << " ";
+                    std::cout << board[i][j] << " ";
                 }
             }
-            cout << "\n"s;
+            std::cout << "\n";
         }
     }
     void DrawStatus() {
-        cout << "Длина змейкм - "s << snake_lenght + 1
-            << "\nОсталось поглотить - "s << vin_lenght - snake_lenght << " сердец.\n"s;
+        std::cout << "Длина змейкм - " << snake_lenght + 1
+            << "\nОсталось поглотить - " << vin_lenght - snake_lenght << " сердец.\n";
         if (snake_lenght <= 2) {
-            cout << "Ты - Головастик. Покушай малыш!\n\n"s;
+            std::cout << "Ты - Головастик. Покушай малыш!\n\n";
         }
         else if (snake_lenght > 2 && snake_lenght <= 8) {
-            cout << "Ты - Маленькая змейка. Ещё чуть-чуть пупсик!\n\n"s;
+            std::cout << "Ты - Маленькая змейка. Ещё чуть-чуть пупсик!\n\n";
         }
         else if (snake_lenght > 8 && snake_lenght <= 15) {
-            cout << "Ты - Обычная змейка. Обыкновенность на кончиках пальцев!\n\n"s;
+            std::cout << "Ты - Обычная змейка. Обыкновенность на кончиках пальцев!\n\n";
         }
         else if (snake_lenght > 15 && snake_lenght <= 21) {
-            cout << "Ты - Жирная змейка. Кто то в последнее время навернул немало фастфуда!\n\n"s;
+            std::cout << "Ты - Жирная змейка. Кто то в последнее время навернул немало фастфуда!\n\n";
         }
         else if (snake_lenght > 21) {
-            cout << "Ты - Отожраный червос. Смотри не лопни!\n\n"s;
+            std::cout << "Ты - Отожраный червос. Смотри не лопни!\n\n";
         }
     }
 public:
@@ -203,43 +194,24 @@ public:
         for (;;) {
             if (_kbhit()) {
                 char key = _getch();
-                if (key == 'w' || key == 'W' || key == -26 || key == -106) {
-                    direction = '1';
-                }
-                else if (key == 'a' || key == 'A' || key == -28 || key == -108) {
-                    direction = '2';
-                }
-                else if (key == 's' || key == 'S' || key == -21 || key == -101) {
-                    direction = '3';
-                }
-                else if (key == 'd' || key == 'D' || key == -94 || key == -126) {
-                    direction = '4';
-                }
-                else if (key == 'x') {
-                    cin >> direction;
-                }
+                if (key == 'w' || key == 'W' || key == -26 || key == -106) { direction = '1'; }
+                else if (key == 'a' || key == 'A' || key == -28 || key == -108) { direction = '2'; }
+                else if (key == 's' || key == 'S' || key == -21 || key == -101) { direction = '3'; }
+                else if (key == 'd' || key == 'D' || key == -94 || key == -126) { direction = '4'; }
             }
             system("cls");      //Очистка экрана
-            if (CreateGame() || snake_lenght == vin_lenght) {
-                break;
-            }
-            if (difficulty == '1') {
-                Sleep(400);
-            }
-            else if (difficulty == '2') {
-                Sleep(300);
-            }
-            else if (difficulty == '3') {
-                Sleep(200);
-            }
+            if (CreateGame() || snake_lenght == vin_lenght) { break; }
+            if (difficulty == '1') { Sleep(400); }
+            else if (difficulty == '2') { Sleep(300); }
+            else if (difficulty == '3') { Sleep(200); }
         }
         if (snake_lenght < vin_lenght) {
-            cout << "Игра окончена - Поражение!\nЖелаете начать заново?\nНажмите 'Y/y' - если хотите или любую другую, чтобы закончить - "s;
+            std::cout << "Игра окончена - Поражение!\nЖелаете начать заново?\nНажмите 'Y/y' - если хотите или любую другую, чтобы закончить - ";
         }
         else {
-            cout << "Игра окончена - Победа!\nЖелаете начать заново?\nНажмите 'Y/y' - если хотите или любую другую, чтобы закончить - "s;
+            std::cout << "Игра окончена - Победа!\nЖелаете начать заново?\nНажмите 'Y/y' - если хотите или любую другую, чтобы закончить - ";
         }
-        cin >> restart;
+        std::cin >> restart;
     }
 };
 
